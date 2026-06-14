@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kết quả Quét Bảo Mật</title>
+<style>
+:root {
+  --bg:#0f172a;--surf:#1e293b;--border:#334155;--muted:#475569;
+  --text:#e2e8f0;--sub:#94a3b8;--dim:#64748b;
+  --red:#ef4444;--orange:#f97316;--yellow:#eab308;--blue:#38bdf8;--green:#22c55e;
+  --red-bg:#450a0a;--ora-bg:#431407;--yel-bg:#422006;--blu-bg:#0c1a2e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:32px 16px;font-size:14px;line-height:1.6}
+.container{max-width:960px;margin:0 auto}
+
+/* HEADER */
+.pg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px}
+.pg-head h1{font-size:22px;color:var(--blue);margin-bottom:4px}
+.pg-head .sub{font-size:13px;color:var(--dim)}
+.pg-head .sub b{color:var(--text);font-family:monospace}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.btn{font-size:12px;padding:8px 14px;border-radius:7px;border:1px solid;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:.15s;background:transparent}
+.btn:hover{opacity:.8;transform:translateY(-1px)}
+.btn-pdf{color:var(--green);border-color:#166534;background:#052e16}
+.btn-back{color:var(--blue);border-color:#075985;background:#082f49}
+
+/* INFO BOX */
+.info-box{background:var(--surf);border-left:3px solid var(--blue);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--dim);line-height:1.8}
+.info-box b{color:var(--sub)}
+
+/* STATS */
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.stat{flex:1;min-width:100px;background:var(--surf);border-radius:10px;padding:14px 12px;text-align:center;border:1px solid var(--border)}
+.stat .n{font-size:30px;font-weight:700;line-height:1}
+.stat .l{font-size:11px;color:var(--sub);margin-top:4px}
+.c-red{color:var(--red)}.c-ora{color:var(--orange)}.c-yel{color:var(--yellow)}.c-blu{color:var(--blue)}
+
+/* BANNER */
+.banner{border-radius:10px;padding:14px 18px;margin-bottom:20px;border-left:4px solid}
+.banner.r-high{background:#1c0505;border-color:var(--red)}
+.banner.r-med{background:#1c0a02;border-color:var(--orange)}
+.banner.r-low{background:#1a1500;border-color:var(--yellow)}
+.banner.r-safe{background:#051a0e;border-color:var(--green)}
+.banner .bt{font-size:13px;font-weight:700;margin-bottom:4px}
+.banner .bd{font-size:12px;color:var(--sub)}
+
+/* LEGEND */
+.legend{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:20px}
+.legend-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:10px}
+.leg-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.leg-text{font-size:12px;color:var(--sub);line-height:1.6}
+.leg-text b{color:var(--text)}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--surf);padding:5px;border-radius:10px;margin-bottom:20px;border:1px solid var(--border)}
+.tab{flex:1;padding:10px 14px;border:none;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;background:transparent;color:var(--dim);transition:.2s}
+.tab.on{background:var(--bg);color:var(--blue)}
+.tab-count{font-size:10px;padding:2px 6px;border-radius:999px;background:var(--muted);color:var(--sub);margin-left:6px}
+
+/* CARD */
+.card{background:var(--surf);border-radius:10px;margin-bottom:12px;overflow:hidden;border:1px solid var(--border);border-left-width:4px}
+.card.red{border-left-color:var(--red)}
+.card.orange{border-left-color:var(--orange)}
+.card.yellow{border-left-color:var(--yellow)}
+.card.blue{border-left-color:var(--blue)}
+.cb-header{padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.cb-ten{flex:1;font-weight:600;font-size:14px}
+.badge{font-size:11px;padding:3px 10px;border-radius:999px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.badge.red{background:var(--red-bg);color:#f87171}
+.badge.orange{background:var(--ora-bg);color:#fb923c}
+.badge.yellow{background:var(--yel-bg);color:#facc15}
+.badge.blue{background:var(--blu-bg);color:#7dd3fc}
+.owasp-tag{font-size:11px;background:var(--bg);color:var(--sub);padding:3px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0}
+.chev{color:var(--dim);font-size:11px;transition:.2s;flex-shrink:0}
+.chev.open{transform:rotate(180deg)}
+
+.cb-body{display:none;padding:0 16px 16px;border-top:1px solid var(--bg)}
+.cb-body.open{display:block}
+
+.sec{margin-top:12px}
+.sec-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:5px}
+.sec-val{font-size:13px;color:var(--sub);line-height:1.7}
+.sec-val.box{background:var(--bg);border-radius:7px;padding:10px 13px;color:var(--text);font-size:12px}
+.sec-val.code{font-family:monospace;background:var(--bg);border-radius:7px;padding:8px 12px;color:#86efac;font-size:12px;word-break:break-all}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+
+/* LINKS */
+.link-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lk{font-size:11px;padding:5px 11px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:.15s;font-weight:500;border:1px solid}
+.lk:hover{opacity:.8;transform:translateY(-1px)}
+.lk-owasp{background:#0a1f35;color:var(--blue);border-color:#0e3050}
+.lk-cwe{background:#1a1035;color:#a78bfa;border-color:#2d1f5e}
+.lk-nvd{background:#1a0509;color:#f87171;border-color:#7f1d1d}
+.lk-ref{background:var(--surf);color:var(--sub);border-color:var(--border)}
+
+.panel{display:none}.panel.on{display:block}
+.empty{text-align:center;padding:60px 20px;color:var(--dim)}
+.btn-back-bottom{display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:12px 22px;background:#0284c7;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px}
+.btn-back-bottom:hover{background:#0369a1}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="pg-head">
+  <div>
+    <h1>🛡️ Kết quả Quét Bảo Mật Website</h1>
+    <p class="sub">Mục tiêu: <b>{{ data.url }}</b></p>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-pdf" onclick="window.print()">🖨️ In </button>
+    <a href="/" class="btn btn-back">← Quét mới</a>
+  </div>
+</div>
+
+<!-- INFO BOX -->
+<div class="info-box">
+  <b>Công cụ:</b> OWASP ZAP (Zed Attack Proxy) v2.17.0 - phần mềm kiểm thử bảo mật mã nguồn mở do tổ chức OWASP phát triển.<br>
+  <b>Phương pháp:</b> DAST (Dynamic Application Security Testing) - tương tác trực tiếp với ứng dụng đang chạy từ bên ngoài, không cần mã nguồn.<br>
+  <b>Chuẩn phân loại:</b> OWASP Top 10 2025 - danh sách 10 nhóm rủi ro bảo mật web phổ biến nhất. Nguồn: owasp.org/Top10/2025<br>
+  <b>Thang đánh giá:</b> ZAP Risk Rating - Cao / Trung bình / Thấp / Thông tin.
+</div>
+
+<!-- THỐNG KÊ -->
+{% set dem_cao  = data.canh_bao | selectattr("muc_do","equalto","High")          | list | length %}
+{% set dem_tb   = data.canh_bao | selectattr("muc_do","equalto","Medium")        | list | length %}
+{% set dem_thap = data.canh_bao | selectattr("muc_do","equalto","Low")           | list | length %}
+{% set dem_tt   = data.canh_bao | selectattr("muc_do","equalto","Informational") | list | length %}
+
+<div class="stats">
+  <div class="stat"><div class="n">{{ data.canh_bao | length }}</div><div class="l">Tổng lỗ hổng</div></div>
+  <div class="stat"><div class="n c-red">{{ dem_cao }}</div><div class="l">Mức Cao</div></div>
+  <div class="stat"><div class="n c-ora">{{ dem_tb }}</div><div class="l">Trung bình</div></div>
+  <div class="stat"><div class="n c-yel">{{ dem_thap }}</div><div class="l">Mức Thấp</div></div>
+  <div class="stat"><div class="n c-blu">{{ dem_tt }}</div><div class="l">Thông tin</div></div>
+</div>
+
+<!-- BANNER -->
+{% if dem_cao > 0 %}
+<div class="banner r-high"><div class="bt" style="color:var(--red)">Mức rủi ro tổng thể: CAO</div><div class="bd">ZAP phát hiện {{ dem_cao }} lỗ hổng mức Cao. Cần xử lý khẩn cấp trước khi triển khai công khai.</div></div>
+{% elif dem_tb > 0 %}
+<div class="banner r-med"><div class="bt" style="color:var(--orange)">Mức rủi ro tổng thể: TRUNG BÌNH</div><div class="bd">Phát hiện {{ dem_tb }} lỗ hổng mức Trung bình. Cần lên kế hoạch khắc phục sớm.</div></div>
+{% elif dem_thap > 0 %}
+<div class="banner r-low"><div class="bt" style="color:var(--yellow)">Mức rủi ro tổng thể: THẤP</div><div class="bd">Phát hiện {{ dem_thap }} vấn đề mức Thấp. Nên đưa vào kế hoạch cải thiện định kỳ.</div></div>
+{% else %}
+<div class="banner r-safe"><div class="bt" style="color:var(--green)">Không phát hiện lỗ hổng nghiêm trọng</div><div class="bd">Không tìm thấy lỗ hổng mức Cao hay Trung bình trong lần quét này. Tiếp tục kiểm tra định kỳ.</div></div>
+{% endif %}
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">Giải thích thang đánh giá ZAP</div>
+  <div class="leg-row"><div class="leg-dot" style="background:var(--red)"></div><div class="leg-text"><b>Cao (High):</b> Lỗ hổng có thể bị khai thác trực tiếp, gây thiệt hại nghiêm trọng như mất dữ liệu hoặc chiếm quyền kiểm soát hệ thống.</div></div>
+  <div class="leg-row"><div class="leg-dot" style="background:var(--orange)"></div><div class="leg-text"><b>Trung bình (Medium):</b> Có thể bị khai thác trong điều kiện nhất định hoặc khi kết hợp với lỗ hổng khác.</div></div>
+  <div class="leg-row"><div class="leg-dot" style="background:var(--yellow)"></div><div class="leg-text"><b>Thấp (Low):</b> Ít gây nguy hiểm trực tiếp nhưng cung cấp thông tin hỗ trợ cho cuộc tấn công khác.</div></div>
+  <div class="leg-row"><div class="leg-dot" style="background:var(--blue)"></div><div class="leg-text"><b>Thông tin (Informational):</b> Không phải lỗ hổng trực tiếp. ZAP ghi nhận thông tin cấu hình có thể hữu ích cho kẻ tấn công trong giai đoạn thu thập thông tin.</div></div>
+  <div style="margin-top:10px;font-size:11px;color:var(--dim)">Đây là đánh giá định tính của đội ngũ OWASP ZAP, không phải điểm số theo công thức toán học.</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab on" onclick="doiTab('plain',this)">Tổng quan <span class="tab-count">{{ data.canh_bao | length }}</span></button>
+  <button class="tab"    onclick="doiTab('tech', this)">Chi tiết <span class="tab-count">{{ data.canh_bao | length }}</span></button>
+</div>
+
+<!-- ══ PANEL NGƯỜI KHÔNG CHUYÊN ══ -->
+<div id="panel-plain" class="panel on">
+{% if data.canh_bao %}
+  {% for cb in data.canh_bao %}
+  <div class="card {{ cb.mau }}">
+    <div class="cb-header" onclick="tog('p{{loop.index}}')">
+      <span class="cb-ten">{{ cb.ten }}</span>
+      <span class="badge {{ cb.mau }}">{{ cb.muc_do_viet }}</span>
+      {% if cb.confidence %}
+      <span class="owasp-tag"> {{ cb.confidence }}</span>
+      {% endif %}
+      <span class="chev" id="cv-p{{loop.index}}">&#9660;</span>
+    </div>
+    <div class="cb-body" id="p{{loop.index}}">
+      <div class="sec"><div class="sec-label">Mức độ đánh giá</div>
+        <div class="sec-val box">
+          {% if cb.muc_do == "High" %}Cao (High) - ZAP đánh giá lỗ hổng này có thể bị khai thác trực tiếp và gây thiệt hại nghiêm trọng.
+          {% elif cb.muc_do == "Medium" %}Trung bình (Medium) - ZAP đánh giá lỗ hổng có thể bị khai thác trong điều kiện nhất định.
+          {% elif cb.muc_do == "Low" %}Thấp (Low) - ZAP đánh giá ít gây nguy hiểm trực tiếp nhưng hỗ trợ cho tấn công khác.
+          {% else %}Thông tin (Informational) - Không phải lỗ hổng trực tiếp.{% endif %}
+        </div>
+      </div>
+      <div class="sec"><div class="sec-label">Vấn đề này là gì?</div>
+        <div class="sec-val">
+        {% if "sql" in cb.ten|lower %}Ứng dụng có thể đưa thẳng dữ liệu người dùng vào câu lệnh cơ sở dữ liệu mà không kiểm tra. Kẻ tấn công có thể đọc, sửa hoặc xóa toàn bộ dữ liệu. Đây là lỗ hổng SQL Injection.
+        {% elif "xss" in cb.ten|lower or "cross-site scripting" in cb.ten|lower %}Trang web có thể cho phép chèn mã JavaScript độc hại chạy trong trình duyệt người dùng khác. Kẻ tấn công có thể đánh cắp thông tin đăng nhập.
+        {% elif "clickjack" in cb.ten|lower or ("frame" in cb.ten|lower and "header" in cb.ten|lower) %}Trang web không có chỉ dẫn ngăn nhúng vào trang khác. Kẻ tấn công có thể tạo trang giả để lừa người dùng thao tác mà không hay biết (Clickjacking).
+        {% elif "cookie" in cb.ten|lower %}Thông tin phiên đăng nhập lưu trong trình duyệt chưa được bảo vệ đúng cách và có thể bị đánh cắp.
+        {% elif "header" in cb.ten|lower %}Máy chủ thiếu tiêu đề bảo mật HTTP. Các tiêu đề này giúp trình duyệt xử lý nội dung an toàn hơn.
+        {% elif "directory" in cb.ten|lower %}Máy chủ cho phép xem danh sách toàn bộ tệp tin trong thư mục. Kẻ tấn công có thể tìm thấy tệp nhạy cảm.
+        {% else %}{{ cb.mo_ta[:300] }}{% if cb.mo_ta|length > 300 %}...{% endif %}{% endif %}
+        </div>
+      </div>
+      <div class="sec"><div class="sec-label">Hậu quả có thể xảy ra</div>
+        <div class="sec-val">
+        {% if cb.muc_do == "High" %}Kẻ tấn công có thể đánh cắp toàn bộ dữ liệu người dùng, chiếm quyền kiểm soát tài khoản hoặc toàn bộ máy chủ.
+        {% elif cb.muc_do == "Medium" %}Có thể dẫn đến lộ thông tin hoặc tạo điều kiện cho tấn công nghiêm trọng hơn khi kết hợp lỗ hổng khác.
+        {% elif cb.muc_do == "Low" %}Ít gây thiệt hại trực tiếp nhưng cung cấp thông tin hỗ trợ kẻ tấn công lập kế hoạch.
+        {% else %}Không gây thiệt hại trực tiếp nhưng có thể hữu ích cho kẻ tấn công trong giai đoạn thu thập thông tin.{% endif %}
+        </div>
+      </div>
+      <div class="sec"><div class="sec-label">Cần làm gì?</div><div class="sec-val">{{ cb.giai_phap[:400] }}{% if cb.giai_phap|length > 400 %}...{% endif %}</div></div>
+      {% if cb.url %}<div class="sec"><div class="sec-label">Địa chỉ bị phát hiện</div><div class="sec-val code">{{ cb.url }}</div></div>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="empty"><p>ZAP không tìm thấy lỗ hổng nào trong lần quét này.</p></div>
+{% endif %}
+</div>
+
+<!-- ══ PANEL KỸ SƯ BẢO MẬT ══ -->
+<div id="panel-tech" class="panel">
+{% if data.canh_bao %}
+  {% for cb in data.canh_bao %}
+  <div class="card {{ cb.mau }}">
+    <div class="cb-header" onclick="tog('t{{loop.index}}')">
+      <span class="cb-ten">{{ cb.ten }}</span>
+      <span class="owasp-tag">{{ cb.owasp_id }} - {{ cb.owasp_ten }}</span>
+      <span class="badge {{ cb.mau }}">{{ cb.muc_do_viet }}</span>
+      {% if cb.confidence %}
+      <span class="owasp-tag" title="Độ tin cậy của ZAP vào alert này"> {{ cb.confidence }}</span>
+      {% endif %}
+      <span class="chev" id="cv-t{{loop.index}}">&#9660;</span>
+    </div>
+    <div class="cb-body" id="t{{loop.index}}">
+      <div class="two-col">
+        <div>
+          <div class="sec"><div class="sec-label">OWASP Top 10 2025</div>
+            <div class="sec-val"><b>{{ cb.owasp_id }}</b> - {{ cb.owasp_ten }}<br>
+            <span style="font-size:12px;color:var(--dim)">Nguồn: owasp.org/Top10/2025</span></div>
+          </div>
+          {% if cb.cweid %}
+          <div class="sec"><div class="sec-label">CWE - Common Weakness Enumeration</div>
+            <div class="sec-val"><b>CWE-{{ cb.cweid }}</b><br>
+            <span style="font-size:12px;color:var(--dim)">Hệ thống phân loại điểm yếu phần mềm do MITRE duy trì. Nguồn: cwe.mitre.org</span></div>
+          </div>
+          {% endif %}
+          <div class="sec"><div class="sec-label">ZAP Risk Rating</div>
+            <div class="sec-val box">
+              {% if cb.muc_do == "High" %}Cao (High) - có thể bị khai thác trực tiếp, gây thiệt hại nghiêm trọng.
+              {% elif cb.muc_do == "Medium" %}Trung bình (Medium) - có thể bị khai thác trong điều kiện nhất định.
+              {% elif cb.muc_do == "Low" %}Thấp (Low) - ít gây nguy hiểm trực tiếp, hỗ trợ cho tấn công khác.
+              {% else %}Thông tin - không phải lỗ hổng trực tiếp.{% endif %}
+              <br><span style="font-size:11px;color:var(--dim)">
+                Độ tin cậy (Confidence): 
+                <b style="color:var(--text)">{{ cb.confidence or "Không rõ" }}</b>
+                {% if cb.confidence == "High" or cb.confidence == "Confirmed" %}
+                  - ZAP khá chắc chắn đây là lỗ hổng thật.
+                {% elif cb.confidence == "Medium" %}
+                  - Cần xác nhận thêm thủ công.
+                {% elif cb.confidence == "Low" %}
+                  - Khả năng false positive cao, nên kiểm tra kỹ.
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div>
+          {% if cb.url %}<div class="sec"><div class="sec-label">URL phát hiện</div><div class="sec-val code">{{ cb.url }}</div></div>{% endif %}
+          <div class="sec"><div class="sec-label">Mô tả kỹ thuật (ZAP)</div><div class="sec-val">{{ cb.mo_ta }}</div></div>
+          <div class="sec"><div class="sec-label">Giải pháp kỹ thuật (ZAP)</div><div class="sec-val">{{ cb.giai_phap }}</div></div>
+          {% if cb.cweid %}
+          <div class="sec"><div class="sec-label">CWE ID</div><div class="sec-val code">CWE-{{ cb.cweid }}</div></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- WSTG -->
+      {% if cb.wstg_list %}
+      <div class="sec"><div class="sec-label">OWASP WSTG</div>
+        <div class="link-row">
+          {% for w in cb.wstg_list %}
+          <a href="{{ w.url }}" target="_blank" class="lk lk-ref">🔗 {{ w.id }}</a>
+          {% endfor %}
+        </div>
+        <div style="font-size:11px;color:var(--dim);margin-top:6px">Mã WSTG chỉ định quy trình kiểm tra thủ công tương ứng theo chuẩn OWASP Web Security Testing Guide v4.2</div>
+      </div>
+      {% endif %}
+
+      <!-- LINKS TRA CỨU -->
+      <div class="sec"><div class="sec-label">Tài liệu tra cứu chính thức</div>
+        <div class="link-row">
+          <a href="https://owasp.org/Top10/2025/" target="_blank" class="lk lk-owasp">🔗 OWASP {{ cb.owasp_id }} - 2025</a>
+          {% if cb.cweid %}
+          <a href="https://cwe.mitre.org/data/definitions/{{ cb.cweid }}.html" target="_blank" class="lk lk-cwe">🔗 CWE-{{ cb.cweid }} MITRE</a>
+          <a href="https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=CWE-{{ cb.cweid }}" target="_blank" class="lk lk-nvd">🔗 Tra CVE theo CWE-{{ cb.cweid }}</a>
+          {% endif %}
+          <a href="https://zaproxy.org/docs/alerts/" target="_blank" class="lk lk-ref">🔗 ZAP Alerts</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="empty"><p>ZAP không tìm thấy lỗ hổng nào.</p></div>
+{% endif %}
+</div>
+
+<a href="/" class="btn-back-bottom">← Quét website khác</a>
+
+</div>
+
+<script>
+function doiTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('panel-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+function tog(id) {
+  var b = document.getElementById(id);
+  var c = document.getElementById('cv-' + id);
+  if (!b) return;
+  var o = b.classList.toggle('open');
+  if (c) c.classList.toggle('open', o);
+}
+</script>
+
+<style media="print">
+  .btn-group, .tabs, .btn-back-bottom { display:none !important; }
+  .panel { display:block !important; }
+  .cb-body { display:block !important; }
+  body { background:#fff; color:#000; padding:16px; }
+  .card { border:1px solid #ccc; margin-bottom:12px; page-break-inside:avoid; }
+  .cb-header { background:#f8f8f8; }
+  .sec-val.box { background:#f0f0f0; color:#000; }
+  .sec-val.code { background:#f0f0f0; color:#065f46; }
+  .info-box { border:1px solid #ccc; background:#f8f8f8; color:#333; }
+  .legend { border:1px solid #ccc; background:#f8f8f8; }
+  .stats { margin-bottom:16px; }
+  .stat { border:1px solid #ccc; background:#f8f8f8; }
+  .banner { border:1px solid #ccc; }
+  h1 { color:#0369a1; }
+</style>
+</body>
+</html>
