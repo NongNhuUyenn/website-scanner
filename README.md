@@ -22,7 +22,11 @@ Kết quả được trình bày qua hai tầng. Tầng tổng quan hiển thị
 
 DVWA (Damn Vulnerable Web Application) là ứng dụng web được thiết kế cố ý chứa nhiều lỗ hổng bảo mật, dùng làm môi trường thực hành và thử nghiệm trong lĩnh vực bảo mật. Kết quả quét phát hiện tổng cộng 187 lần ghi nhận lỗ hổng thuộc 24 loại khác nhau, trong đó có 1 lỗ hổng mức Cao là SQL Injection tại trang cấu hình hệ thống, 64 lần ghi nhận mức Trung bình bao gồm thiếu Content Security Policy, Clickjacking, CSRF và Directory Browsing, 89 lần ghi nhận mức Thấp chủ yếu là rò rỉ thông tin phiên bản máy chủ, và 33 ghi nhận ở mức Thông tin. Con số 187 phản ánh tổng số lần ZAP phát hiện lỗ hổng trên từng endpoint riêng lẻ, không phải 187 loại lỗ hổng khác nhau, vì cùng một loại lỗ hổng có thể xuất hiện lặp lại trên nhiều trang của ứng dụng.
 
-Kết quả quét chi tiết có trong thư mục demo của repository này.
+Kết quả quét chi tiết có thể xem trực tiếp tại đây, không cần tải về hay cài đặt thêm gì:
+
+https://nongnhuuyenn.github.io/website-scanner/
+
+Đây là trang kết quả thực tế được xuất từ công cụ sau khi quét DVWA, hiển thị đầy đủ 187 lỗ hổng phân loại theo OWASP Top 10 2025 bao gồm cả tầng tổng quan và tầng chi tiết kỹ thuật. File PDF của cùng kết quả này cũng có trong thư mục demo của repository.
 
 ## Cách chạy
 
