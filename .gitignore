@@ -6,3 +6,13 @@ __pycache__/
 relogin.py
 test_auth_scan.py
 lay_thongke.py
+nuclei.exe
+output.json
+ket_qua_nuclei.json
+zap_sample.json
+check_results.py
+fix_auth.py
+fix_cookie.py
+inject_cookie.py
+test_login.py
+login_zap.py
